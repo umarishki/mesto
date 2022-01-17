@@ -1,0 +1,5 @@
+.profile-info__subtitle {
+    margin: 0;
+    padding: 0;
+    grid-column: 1 / 3;
+}

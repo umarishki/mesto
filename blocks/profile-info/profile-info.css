@@ -1,0 +1,8 @@
+.profile-info {
+    max-width: 336px;
+    display: grid;
+    grid-template: 39px 18px / 294px 24px ;
+    gap: 25px 16px;
+    margin-left: 30px;
+    margin-right: 244px;
+}

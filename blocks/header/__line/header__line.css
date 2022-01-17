@@ -1,0 +1,9 @@
+.header__line {
+    height: 1px;
+    width: 880px;
+    border: none;
+    background-color: #545454;; /* Цвет линии */
+    color: #545454;; /* Цвет линии для IE6-7 */
+    opacity: 0.7;
+    margin: 0;
+}
