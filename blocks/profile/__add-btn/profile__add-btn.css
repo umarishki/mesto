@@ -6,6 +6,11 @@
     border-radius: 2px;
     background-color: black;
     cursor: pointer;
+    transition: opacity 0.5s ease;
+}
+
+.profile__add-btn:hover {
+    opacity: 0.6;
 }
 
 @media screen and (max-width: 767px) {

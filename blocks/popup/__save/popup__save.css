@@ -13,6 +13,11 @@
     margin-top: 18px;
     cursor: pointer;
     padding: 0;
+    transition: opacity 0.5s ease;
+}
+
+.popup__save:hover {
+    opacity: 0.8;
 }
 
 @media screen and (max-width: 767px) {
