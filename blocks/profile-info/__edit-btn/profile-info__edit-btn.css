@@ -1,6 +1,7 @@
 .profile-info__edit-btn {
     width: 24px;
     height: 24px;
+    font-size: 0;
     background-color: black;
     cursor: pointer;
     border: 1px solid #FFFFFF;
@@ -15,7 +16,7 @@
 }
 
 @media screen and (max-width: 767px) {
-    .profile__add-icon {
+    .profile-info__edit-btn {
         width: 18px;
         height: 18px;
     }
