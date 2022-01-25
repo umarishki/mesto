@@ -8,10 +8,6 @@ const profileOccupation = document.querySelector('.profile-info__subtitle');
 const popupNameInput = document.querySelector('.popup__input_field_name');
 const popupOccupationInput = document.querySelector('.popup__input_field_occupation');
 
-profileOpenPopupButton.addEventListener('click', openPopup);
-popupCloseButton.addEventListener('click', closePopup);
-popupForm.addEventListener('submit', editProfile); 
-
 function openPopup() {
     popup.classList.add('popup_opened');
     popupNameInput.value = profileName.textContent;
@@ -28,3 +24,7 @@ function editProfile(evt) {
     profileOccupation.textContent = popupOccupationInput.value;
     closePopup();
 }
+
+profileOpenPopupButton.addEventListener('click', openPopup);
+popupCloseButton.addEventListener('click', closePopup);
+popupForm.addEventListener('submit', editProfile); 
