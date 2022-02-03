@@ -33,6 +33,7 @@
             <ul class="cards-container">
                 <li class="cards__item">
                     <img class="cards__image" src="images/cards__photo1.jpg" alt="Фотография 1">
+                    <button class="cards__delete-icon" type="button"></button>
                     <div class="cards__footer">
                         <h2 class="cards__title">Дружимся</h2>
                         <button class="cards__like-icon cards__like-icon_active" type="button"></button>
@@ -80,16 +81,29 @@
     <footer class="footer">
         <p class="footer__copyright">© 2020 Mesto Russia</p>
     </footer>
-    <div class="popup">
+    <div class="popup popup_type_edit-profile">
         <div class="popup__container">
-            <button class="popup__close" type="button">
+            <button class="popup__close popup__close_type_edit-profile" type="button">
                 <img class="popup__image-close" src="images/popup__close.svg" alt="Иконка: close">
             </button>
-            <form class="popup__form" name="edit-form">
+            <form class="popup__form popup__form_type_edit-profile" name="edit-form">
                 <h2 class="popup__title">Редактировать профиль</h2>
                 <input class="popup__input popup__input_field_name" type="text" name="name" placeholder="Имя" required>
                 <input class="popup__input popup__input_field_occupation" type="text" name="occupation" placeholder="Род занятий" required>
                 <button class="popup__save" type="submit">Сохранить</button>
+            </form>
+        </div>
+    </div>
+    <div class="popup popup_type_add-card">
+        <div class="popup__container">
+            <button class="popup__close popup__close_type_add-card" type="button">
+                <img class="popup__image-close" src="images/popup__close.svg" alt="Иконка: close">
+            </button>
+            <form class="popup__form popup__form_type_add-card" name="add-form">
+                <h2 class="popup__title">Новое место</h2>
+                <input class="popup__input popup__input_field_place-name" type="text" name="place-name" placeholder="Название" required>
+                <input class="popup__input popup__input_field_link" type="text" name="link" placeholder="Ссылка на картинку" required>
+                <button class="popup__save" type="submit">Создать</button>
             </form>
         </div>
     </div>
