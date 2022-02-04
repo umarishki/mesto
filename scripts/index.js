@@ -68,11 +68,18 @@ defaultCardsState(initialCards);
 
 const btnLikeCard = document.querySelectorAll('.cards__like-icon');
 
+function createCard(sourceCard, nameCard) {
+    const cardElement = cardTemplate.querySelector('.cards__item').cloneNode(true);
+    cardElement.querySelector('.cards__image').src = sourceCard;
+    cardElement.querySelector('.cards__image').alt = nameCard;
+    cardElement.querySelector('.cards__title').textContent = nameCard;
+    return cardElement;
+}
+
 // default cards amount on page
 function defaultCardsState(cards) {
     cards.forEach((item) => {
-        const altName = 'Фотография: ' + cardsContainer.children.length;
-        const cardElement = createCard(item.link, altName, item.name);
+        const cardElement = createCard(item.link, item.name);
         showCard(cardElement);
         addDeleteListener(cardElement.querySelector('.cards__delete-icon'));
         addLikeListener(cardElement.querySelector('.cards__like-icon'));
@@ -80,24 +87,12 @@ function defaultCardsState(cards) {
     })
 }
 
-function createCard(sourceCard, altText, nameCard) {
-    const cardElement = cardTemplate.querySelector('.cards__item').cloneNode(true);
-    cardElement.querySelector('.cards__image').src = sourceCard;
-    cardElement.querySelector('.cards__image').alt = altText;
-    cardElement.querySelector('.cards__title').textContent = nameCard;
-    return cardElement;
-}
-
-function showCard(cardElement) {
-    cardsContainer.prepend(cardElement);
-}
-
 // add card with pop-up
 function addCard(evt) {
     evt.preventDefault();
 
-    let altName = 'Фотография: ' + cardsContainer.children.length;
-    const cardElement = createCard(inputSourceAddCard.value, altName, inputNameAddCard.value);
+    const cardElement = createCard(inputSourceAddCard.value, inputNameAddCard.value);
+    const noCardMessageElement = document.querySelector('.cards__nocard-massage')
 
     showCard(cardElement);
     addDeleteListener(cardElement.querySelector('.cards__delete-icon'));
@@ -105,11 +100,18 @@ function addCard(evt) {
     addOpenPreviewListener(cardElement.querySelector('.cards__image'), cardElement.querySelector('.cards__title'));
 
     // check if have a massage
-    if (document.querySelector('.cards__nocard-massage') !== null) {
-        document.querySelector('.cards__nocard-massage').remove();
+    if (noCardMessageElement !== null) {
+        noCardMessageElement.remove();
     }
 
-    closePopupAddCard();
+    inputNameAddCard.value = '';
+    inputSourceAddCard.value = '';
+    
+    closePopup(popupAddCard);
+}
+
+function showCard(cardElement) {
+    cardsContainer.prepend(cardElement);
 }
 
 function deleteCard(elementCard) {
@@ -122,46 +124,25 @@ function deleteCard(elementCard) {
     }
 }
 
+function editProfile(evt) {
+    evt.preventDefault();
+
+    profileName.textContent = inputNameEditProfile.value;
+    profileOccupation.textContent = inputOccupationEditProfile.value;
+
+    closePopup(popupEditProfile);
+}
+
 function changeLikeCardIcon(btnLikeCard) {
     btnLikeCard.classList.toggle('cards__like-icon_active');
 }
 
-function openPopupAddCard() {
-    popupAddCard.classList.add('popup_opened');
-    inputNameAddCard.value = '';
-    inputSourceAddCard.value = '';
+function openPopup(popup) {
+    popup.classList.add('popup_opened');
 }
 
-function closePopupAddCard() {
-    popupAddCard.classList.remove('popup_opened');
-}
-
-function openCardPreview(cardImage, cardTitle) {
-    imageCardPreview.src = cardImage.src;
-    imageCardPreview.alt = cardTitle.textContent;;
-    titleCardPreview.textContent = cardTitle.textContent;
-    popupCardPreview.classList.add('popup_opened');
-}
-
-function closeCardPreview() {
-    popupCardPreview.classList.remove('popup_opened');
-}
-
-function editProfile(evt) {
-    evt.preventDefault();
-    profileName.textContent = inputNameEditProfile.value;
-    profileOccupation.textContent = inputOccupationEditProfile.value;
-    closePopupEditProfile();
-}
-
-function openPopupEditProfile() {
-    popupEditProfile.classList.add('popup_opened');
-    inputNameEditProfile.value = profileName.textContent;
-    inputOccupationEditProfile.value = profileOccupation.textContent;
-}
-
-function closePopupEditProfile() {
-    popupEditProfile.classList.remove('popup_opened');
+function closePopup(popup) {
+    popup.classList.remove('popup_opened');
 }
 
 function addDeleteListener(btnDeleteCard) {
@@ -173,18 +154,27 @@ function addLikeListener(btnLikeCard) {
 }
 
 function addOpenPreviewListener(cardImage, cardTitle) {
-    cardImage.addEventListener('click', () => {openCardPreview(cardImage, cardTitle)});
+    cardImage.addEventListener('click', () => {
+        imageCardPreview.src = cardImage.src;
+        imageCardPreview.alt = cardTitle.textContent;;
+        titleCardPreview.textContent = cardTitle.textContent;
+        openPopup(popupCardPreview);
+    });
 }
 
 // pop-up "edit-profile" event-listeners
-btnOpenEditProfile.addEventListener('click', openPopupEditProfile);
-btnCloseEditProfile.addEventListener('click', closePopupEditProfile);
+btnOpenEditProfile.addEventListener('click', () => {
+    openPopup(popupEditProfile);
+    inputNameEditProfile.value = profileName.textContent;
+    inputOccupationEditProfile.value = profileOccupation.textContent;
+});
+btnCloseEditProfile.addEventListener('click', () => {closePopup(popupEditProfile)});
 formEditProfile.addEventListener('submit', editProfile);
 
 // pop-up "add-card" event-listeners
-btnOpenAddCard.addEventListener('click', openPopupAddCard);
-btnCloseAddCard.addEventListener('click', closePopupAddCard);
+btnOpenAddCard.addEventListener('click', () => {openPopup(popupAddCard)});
+btnCloseAddCard.addEventListener('click', () => {closePopup(popupAddCard)});
 formAddCard.addEventListener('submit', addCard);
 
 // pop-up "card-preview" event-listeners
-btnCloseCardPreview.addEventListener('click', closeCardPreview);
+btnCloseCardPreview.addEventListener('click', () => {closePopup(popupCardPreview)});
