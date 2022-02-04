@@ -76,7 +76,7 @@ function defaultCardsState(cards) {
         showCard(cardElement);
         addDeleteListener(cardElement.querySelector('.cards__delete-icon'));
         addLikeListener(cardElement.querySelector('.cards__like-icon'));
-        addOpenPreviewListener(cardElement.querySelector('.cards__image'));
+        addOpenPreviewListener(cardElement.querySelector('.cards__image'), cardElement.querySelector('.cards__title'));
     })
 }
 
@@ -100,7 +100,7 @@ function addCard(evt) {
     showCard(cardElement);
     addDeleteListener(cardElement.querySelector('.cards__delete-icon'));
     addLikeListener(cardElement.querySelector('.cards__like-icon'));
-    addOpenPreviewListener(cardElement.querySelector('.cards__image'));
+    addOpenPreviewListener(cardElement.querySelector('.cards__image'), cardElement.querySelector('.cards__title'));
     closePopupAddCard();
 }
 
@@ -122,10 +122,10 @@ function closePopupAddCard() {
     popupAddCard.classList.remove('popup_opened');
 }
 
-function openCardPreview(cardImage) {
+function openCardPreview(cardImage, cardTitle) {
     imageCardPreview.src = cardImage.src;
-    imageCardPreview.alt = '124';
-    titleCardPreview.textContent = 
+    imageCardPreview.alt = cardTitle.textContent;;
+    titleCardPreview.textContent = cardTitle.textContent;
     popupCardPreview.classList.add('popup_opened');
 }
 
@@ -158,8 +158,8 @@ function addLikeListener(btnLikeCard) {
     btnLikeCard.addEventListener('click', () => {changeLikeCardIcon(btnLikeCard)});
 }
 
-function addOpenPreviewListener(cardImage) {
-    cardImage.addEventListener('click', () => {openCardPreview(cardImage)});
+function addOpenPreviewListener(cardImage, cardTitle) {
+    cardImage.addEventListener('click', () => {openCardPreview(cardImage, cardTitle)});
 }
 
 // pop-up "edit-profile" event-listeners
