@@ -1,6 +1,7 @@
 .page {
     max-width: 1280px;
     min-width: 320px;
+    min-height: 100vh;
     margin: 0 auto;
     background-color: #000;
     color: white;
@@ -9,4 +10,9 @@
     -moz-text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items:center;
+    align-content: flex-start;
 }

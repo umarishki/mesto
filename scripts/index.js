@@ -95,17 +95,31 @@ function showCard(cardElement) {
 // add card with pop-up
 function addCard(evt) {
     evt.preventDefault();
+
     let altName = 'Фотография: ' + cardsContainer.children.length;
     const cardElement = createCard(inputSourceAddCard.value, altName, inputNameAddCard.value);
+
     showCard(cardElement);
     addDeleteListener(cardElement.querySelector('.cards__delete-icon'));
     addLikeListener(cardElement.querySelector('.cards__like-icon'));
     addOpenPreviewListener(cardElement.querySelector('.cards__image'), cardElement.querySelector('.cards__title'));
+
+    // check if have a massage
+    if (document.querySelector('.cards__nocard-massage') !== null) {
+        document.querySelector('.cards__nocard-massage').remove();
+    }
+
     closePopupAddCard();
 }
 
 function deleteCard(elementCard) {
     elementCard.remove();
+    if (cardsContainer.children.length === 1) {
+        const noCardMessageElement = document.createElement('p');
+        noCardMessageElement.textContent = 'В профиле нет ни одной карточки. Нажмите + для добавления';
+        noCardMessageElement.classList.add('cards__nocard-massage');
+        cardsContainer.before(noCardMessageElement);
+    }
 }
 
 function changeLikeCardIcon(btnLikeCard) {
