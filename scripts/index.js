@@ -73,6 +73,11 @@ function createCard(sourceCard, nameCard) {
     cardElement.querySelector('.cards__image').src = sourceCard;
     cardElement.querySelector('.cards__image').alt = nameCard;
     cardElement.querySelector('.cards__title').textContent = nameCard;
+
+    addDeleteListener(cardElement.querySelector('.cards__delete-icon'));
+    addLikeListener(cardElement.querySelector('.cards__like-icon'));
+    addOpenPreviewListener(cardElement.querySelector('.cards__image'), cardElement.querySelector('.cards__title'));
+
     return cardElement;
 }
 
@@ -81,9 +86,6 @@ function defaultCardsState(cards) {
     cards.forEach((item) => {
         const cardElement = createCard(item.link, item.name);
         showCard(cardElement);
-        addDeleteListener(cardElement.querySelector('.cards__delete-icon'));
-        addLikeListener(cardElement.querySelector('.cards__like-icon'));
-        addOpenPreviewListener(cardElement.querySelector('.cards__image'), cardElement.querySelector('.cards__title'));
     })
 }
 
@@ -95,9 +97,6 @@ function addCard(evt) {
     const noCardMessageElement = document.querySelector('.cards__nocard-massage')
 
     showCard(cardElement);
-    addDeleteListener(cardElement.querySelector('.cards__delete-icon'));
-    addLikeListener(cardElement.querySelector('.cards__like-icon'));
-    addOpenPreviewListener(cardElement.querySelector('.cards__image'), cardElement.querySelector('.cards__title'));
 
     // check if have a massage
     if (noCardMessageElement !== null) {
