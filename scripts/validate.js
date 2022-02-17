@@ -1,9 +1,8 @@
+enableValidation(selectors);
 
 // add listeners for all forms in document
 function enableValidation({ formSelector, ...selectorsObj }) {
-    const formList = Array.from(document.querySelectorAll(formSelector));
-
-    formList.forEach((formElement) => {
+    getFormList(document).forEach((formElement) => {
         formElement.addEventListener('submit', (evt) => {
             evt.preventDefault();
         });
@@ -13,17 +12,15 @@ function enableValidation({ formSelector, ...selectorsObj }) {
 
 // add listeners for all input-elements in form
 function setEventListeners(formElement, { inputSelector, ...selectorsObj }) {
-    const inputList = Array.from(formElement.querySelectorAll(inputSelector));
+    const inputList = getInputList(formElement);
     const { submitButtonSelector, inactiveButtonClass, inputErrorClass, errorClass } = selectorsObj;
     const buttonElement = formElement.querySelector(submitButtonSelector);
-    let isValidIfEmptyForm = isEmptyForm(inputList);
 
     inputList.forEach((inputElement) => {
         changeButtonState(inputList, buttonElement, inactiveButtonClass);
-        isValid(isValidIfEmptyForm, formElement, inputElement, inputErrorClass, errorClass);
+
         inputElement.addEventListener('input', () => {
-            isValidIfEmptyForm = false;
-            isValid(isValidIfEmptyForm, formElement, inputElement, inputErrorClass, errorClass);
+            isValid(false, formElement, inputElement, inputErrorClass, errorClass);
             changeButtonState(inputList, buttonElement, inactiveButtonClass);
         });
     })
