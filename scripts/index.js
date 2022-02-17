@@ -81,7 +81,7 @@ function createCard(sourceCard, nameCard) {
     return cardElement;
 }
 
-// default cards amount on page
+// default cards on page
 function defaultCardsState(cards) {
     cards.forEach((item) => {
         const cardElement = createCard(item.link, item.name);
@@ -103,9 +103,7 @@ function addCard(evt) {
         noCardMessageElement.remove();
     }
 
-    inputNameAddCard.value = '';
-    inputSourceAddCard.value = '';
-    
+    formAddCard.reset();
     closePopup(popupAddCard);
 }
 
@@ -138,6 +136,14 @@ function changeLikeCardIcon(btnLikeCard) {
 
 function openPopup(popup) {
     popup.classList.add('popup_opened');
+    enableValidation({
+        formSelector: '.popup__form',
+        inputSelector: '.popup__input',
+        submitButtonSelector: '.popup__button',
+        inactiveButtonClass: 'popup__button_disabled',
+        inputErrorClass: 'popup__input_type_error',
+        errorClass: 'popup__error_visible'
+    });
 }
 
 function closePopup(popup) {
@@ -163,9 +169,9 @@ function addOpenPreviewListener(cardImage, cardTitle) {
 
 // pop-up "edit-profile" event-listeners
 btnOpenEditProfile.addEventListener('click', () => {
-    openPopup(popupEditProfile);
     inputNameEditProfile.value = profileName.textContent;
     inputOccupationEditProfile.value = profileOccupation.textContent;
+    openPopup(popupEditProfile);
 });
 btnCloseEditProfile.addEventListener('click', () => {closePopup(popupEditProfile)});
 formEditProfile.addEventListener('submit', editProfile);
@@ -177,3 +183,72 @@ formAddCard.addEventListener('submit', addCard);
 
 // pop-up "card-preview" event-listeners
 btnCloseCardPreview.addEventListener('click', () => {closePopup(popupCardPreview)});
+
+
+
+
+// VALIDATION
+
+// add listeners for all forms in document
+function enableValidation({formSelector, ...selectorsObj}) {
+    const formList = Array.from(document.querySelectorAll(formSelector));
+
+    formList.forEach((formElement) => {
+        formElement.addEventListener('submit', (evt) => {
+            evt.preventDefault();
+        });
+        setEventListeners(formElement, selectorsObj);
+    })
+}
+
+// add listeners for all input-elements in form
+function setEventListeners(formElement, {inputSelector, ...selectorsObj}) {
+    const inputList = Array.from(formElement.querySelectorAll(inputSelector));
+    const {submitButtonSelector, inactiveButtonClass, inputErrorClass, errorClass} = selectorsObj;
+    const buttonElement = formElement.querySelector(submitButtonSelector);
+    inputList.forEach((inputElement) => {
+        changeButtonState(inputList, buttonElement, inactiveButtonClass);
+        isValid(false, formElement, inputElement, inputErrorClass, errorClass);
+        inputElement.addEventListener('input', () => {
+            isValid(true, formElement, inputElement, inputErrorClass, errorClass);
+            changeButtonState(inputList, buttonElement, inactiveButtonClass);
+        });
+    })
+}
+
+function showInputError(inputElement, errorElement, errorMessage, inputErrorClass, errorClass) {
+    inputElement.classList.add(inputErrorClass);
+    errorElement.classList.add(errorClass);
+    errorElement.textContent = errorMessage;
+}
+
+function hideInputError(inputElement, errorElement, inputErrorClass, errorClass) {
+    inputElement.classList.remove(inputErrorClass);
+    errorElement.classList.remove(errorClass);
+    errorElement.textContent = '';
+}
+
+function isValid(needCheckEmpty, formElement, inputElement, inputErrorClass, errorClass) {
+    const errorMessageElement = formElement.querySelector(`.${inputElement.id}-error`);
+    if (!needCheckEmpty && inputElement.value === '') {
+        hideInputError(inputElement, errorMessageElement, inputErrorClass, errorClass);
+    } else if (!inputElement.validity.valid) {
+        showInputError(inputElement, errorMessageElement, inputElement.validationMessage, inputErrorClass, errorClass);
+    } else {
+        hideInputError(inputElement, errorMessageElement, inputErrorClass, errorClass);
+    }
+}
+
+function hasInvalidInput(inputList) {
+    return inputList.some((inputElement) => !inputElement.validity.valid);
+}
+
+function changeButtonState(inputList, buttonElement, inactiveButtonClass) {
+    if (hasInvalidInput(inputList)) {
+        buttonElement.setAttribute('disabled', true);
+        buttonElement.classList.add(inactiveButtonClass);
+    } else {
+        buttonElement.removeAttribute('disabled');
+        buttonElement.classList.remove(inactiveButtonClass);
+    }
+}
