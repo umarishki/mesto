@@ -71,7 +71,7 @@ const selectors = {
 
 defaultCardsOnPage(initialCards);
 
-addOpenPopupListeners();
+addPopupListeners();
 
 function createCard(sourceCard, nameCard) {
     const cardElement = cardTemplate.querySelector('.cards__item').cloneNode(true);
@@ -144,12 +144,12 @@ function openPopup(popup) {
     getFormList(popup).forEach((formElement) => {
         const inputList = getInputList(formElement);
         inputList.forEach((inputElement) => {
+            const buttonElement = formElement.querySelector(selectors.submitButtonSelector);
             isValid(isEmptyForm(inputList), formElement, inputElement, selectors.inputErrorClass, selectors.errorClass);
+            changeButtonState(inputList, buttonElement, selectors.inactiveButtonClass);
         });
     });
 
-    formEditProfile.addEventListener('submit', editProfile);
-    formAddCard.addEventListener('submit', addCardWithPopup);
     document.addEventListener('keydown', closeByEscape);
     popup.addEventListener('click', closeByClickOverlay);
     popup.firstElementChild.addEventListener('click', stopPropagationForListener);
@@ -157,8 +157,8 @@ function openPopup(popup) {
 }
 
 function closeByEscape(evt) {
-    const openedPopup = document.querySelector('.popup_opened');
     if (evt.key === 'Escape') {
+        const openedPopup = document.querySelector('.popup_opened');
         closePopup(openedPopup);
     }
 }
@@ -175,8 +175,6 @@ function closeByClickCross() {
 function closePopup(popup) {
     popup.classList.remove('popup_opened');
 
-    formEditProfile.removeEventListener('submit', editProfile);
-    formAddCard.removeEventListener('submit', addCardWithPopup);
     document.removeEventListener('keydown', closeByEscape);
     popup.removeEventListener('click', closeByClickOverlay);
     popup.firstElementChild.removeEventListener('click', stopPropagationForListener);
@@ -204,7 +202,7 @@ function addOpenPreviewListener(cardImage, cardTitle) {
     });
 }
 
-function addOpenPopupListeners() {
+function addPopupListeners() {
     btnOpenEditProfile.addEventListener('click', () => {
         inputNameEditProfile.value = profileName.textContent;
         inputOccupationEditProfile.value = profileOccupation.textContent;
@@ -212,6 +210,9 @@ function addOpenPopupListeners() {
     });
 
     btnOpenAddCard.addEventListener('click', () => { openPopup(popupAddCard) });
+
+    formEditProfile.addEventListener('submit', editProfile);
+    formAddCard.addEventListener('submit', addCardWithPopup);
 }
 
 function getInputList(inputContainer) {
@@ -219,5 +220,6 @@ function getInputList(inputContainer) {
 }
 
 function getFormList(formContainer) {
+    console.log('123');
     return Array.from(formContainer.querySelectorAll(selectors.formSelector));
 }
