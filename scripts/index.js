@@ -1,3 +1,6 @@
+import Card from './Card.js';
+import FormValidator from './FormValidator.js';
+
 // profile elements
 const profileName = document.querySelector('.profile-info__title');
 const profileOccupation = document.querySelector('.profile-info__subtitle');
@@ -23,15 +26,8 @@ const inputSourceAddCard = document.querySelector('.popup__input_field_link');
 // pop-up "card-preview" elements
 const popupCardPreview = document.querySelector('.popup_type_card-preview');
 
-const imageCardPreview = document.querySelector('.popup__img-preview');
-const titleCardPreview = document.querySelector('.popup__preview-title');
-
-// template element
-const cardTemplate = document.querySelector('#card').content;
-
-// cards-container element
+// container for cards
 const cardsContainer = document.querySelector('.cards-container');
-
 
 const initialCards = [
     {
@@ -60,72 +56,53 @@ const initialCards = [
     }
 ];
 
-const selectors = {
-    formSelector: '.popup__form',
-    inputSelector: '.popup__input',
-    submitButtonSelector: '.popup__button',
-    inactiveButtonClass: 'popup__button_disabled',
-    inputErrorClass: 'popup__input_type_error',
-    errorClass: 'popup__error_visible'
-};
-
-defaultCardsOnPage(initialCards);
+renderDefaultCardsOnPage(initialCards);
 
 addPopupListeners();
 
-function createCard(sourceCard, nameCard) {
-    const cardElement = cardTemplate.querySelector('.cards__item').cloneNode(true);
-    cardElement.querySelector('.cards__image').src = sourceCard;
-    cardElement.querySelector('.cards__image').alt = nameCard;
-    cardElement.querySelector('.cards__title').textContent = nameCard;
+const renderFormValidators = (function () {
+    const formValidators = [];
 
-    addDeleteListener(cardElement.querySelector('.cards__delete-icon'));
-    addLikeListener(cardElement.querySelector('.cards__like-icon'));
-    addOpenPreviewListener(cardElement.querySelector('.cards__image'), cardElement.querySelector('.cards__title'));
+    FormValidator.getFormList(document, selectors.formSelector).forEach((formElement) => {
+        const formValidator = new FormValidator(selectors, formElement);
+        formValidator.enableValidation();
+        formValidators.push(formValidator);
+    });
 
-    return cardElement;
-}
+    return formValidators;
+}());
 
 function addCardWithPopup(evt) {
     evt.preventDefault();
 
-    const cardElement = createCard(inputSourceAddCard.value, inputNameAddCard.value);
-    const noCardMessageElement = document.querySelector('.cards__nocard-massage')
+    const cardElement = new Card({name: inputNameAddCard.value, link: inputSourceAddCard.value}, '#card');
+    cardElement.getCard();
+    cardElement.showCard();
 
-    showCard(cardElement);
-
-    // check if have a massage
-    if (noCardMessageElement !== null) {
-        noCardMessageElement.remove();
-    }
+    toggleNocardMessage();
 
     formAddCard.reset();
     closePopup(popupAddCard);
 }
 
-function showCard(cardElement) {
-    cardsContainer.prepend(cardElement);
-}
-
-function defaultCardsOnPage(cards) {
-    cards.forEach((item) => {
-        const cardElement = createCard(item.link, item.name);
-        showCard(cardElement);
+function renderDefaultCardsOnPage(cardsData) {
+    cardsData.forEach((item) => {
+        const cardElement = new Card(item, '#card');
+        cardElement.getCard();
+        cardElement.showCard();
     })
 }
 
-function deleteCard(elementCard) {
-    elementCard.remove();
+function toggleNocardMessage(cardElement) {
+    let noCardMessageElement = document.querySelector('.cards__nocard-massage');
     if (cardsContainer.children.length === 1) {
-        const noCardMessageElement = document.createElement('p');
+        noCardMessageElement = document.createElement('p');
         noCardMessageElement.textContent = 'В профиле нет ни одной карточки. Нажмите + для добавления';
         noCardMessageElement.classList.add('cards__nocard-massage');
         cardsContainer.before(noCardMessageElement);
+    } else if(noCardMessageElement !== null) {
+        noCardMessageElement.remove();
     }
-}
-
-function changeLikeCardIcon(btnLikeCard) {
-    btnLikeCard.classList.toggle('cards__like-icon_active');
 }
 
 function editProfile(evt) {
@@ -146,15 +123,9 @@ function openPopup(popup) {
 }
 
 function openPopupWithForms(popup) {
-    getFormList(popup).forEach((formElement) => {
-        const inputList = getInputList(formElement);
-        inputList.forEach((inputElement) => {
-            const buttonElement = formElement.querySelector(selectors.submitButtonSelector);
-            isValid(isEmptyForm(inputList), formElement, inputElement, selectors.inputErrorClass, selectors.errorClass);
-            changeButtonState(inputList, buttonElement, selectors.inactiveButtonClass);
-        });
-    });
-
+    renderFormValidators.forEach((formValidator) => {
+        formValidator.checkValidationToOpenFormIfNeeded(popup);
+    })
     openPopup(popup);
 }
 
@@ -187,23 +158,6 @@ function stopPropagationForListener(evt) {
     evt.stopPropagation();
 }
 
-function addDeleteListener(btnDeleteCard) {
-    btnDeleteCard.addEventListener('click', () => { deleteCard(btnDeleteCard.parentElement) });
-}
-
-function addLikeListener(btnLikeCard) {
-    btnLikeCard.addEventListener('click', () => { changeLikeCardIcon(btnLikeCard) });
-}
-
-function addOpenPreviewListener(cardImage, cardTitle) {
-    cardImage.addEventListener('click', () => {
-        imageCardPreview.src = cardImage.src;
-        imageCardPreview.alt = cardTitle.textContent;;
-        titleCardPreview.textContent = cardTitle.textContent;
-        openPopup(popupCardPreview);
-    });
-}
-
 function addPopupListeners() {
     btnOpenEditProfile.addEventListener('click', () => {
         inputNameEditProfile.value = profileName.textContent;
@@ -217,10 +171,5 @@ function addPopupListeners() {
     formAddCard.addEventListener('submit', addCardWithPopup);
 }
 
-function getInputList(inputContainer) {
-    return Array.from(inputContainer.querySelectorAll(selectors.inputSelector));
-}
 
-function getFormList(formContainer) {
-    return Array.from(formContainer.querySelectorAll(selectors.formSelector));
-}
+
