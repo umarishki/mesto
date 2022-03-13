@@ -1,5 +1,5 @@
-import Card from './Card.js';
-import FormValidator from './FormValidator.js';
+import { Card, cardsContainer } from './Card.js';
+import { FormValidator } from './FormValidator.js';
 
 // profile elements
 const profileName = document.querySelector('.profile-info__title');
@@ -22,12 +22,6 @@ const btnOpenAddCard = document.querySelector('.profile__add-btn');
 
 const inputNameAddCard = document.querySelector('.popup__input_field_place-name');
 const inputSourceAddCard = document.querySelector('.popup__input_field_link');
-
-// pop-up "card-preview" elements
-const popupCardPreview = document.querySelector('.popup_type_card-preview');
-
-// container for cards
-const cardsContainer = document.querySelector('.cards-container');
 
 const initialCards = [
     {
@@ -56,6 +50,15 @@ const initialCards = [
     }
 ];
 
+const selectors = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible'
+};
+
 renderDefaultCardsOnPage(initialCards);
 
 addPopupListeners();
@@ -76,7 +79,7 @@ function addCardWithPopup(evt) {
     evt.preventDefault();
 
     const cardElement = new Card({name: inputNameAddCard.value, link: inputSourceAddCard.value}, '#card');
-    cardElement.getCard();
+    cardElement.getCard(openPopup, toggleNocardMessage);
     cardElement.showCard();
 
     toggleNocardMessage();
@@ -88,21 +91,9 @@ function addCardWithPopup(evt) {
 function renderDefaultCardsOnPage(cardsData) {
     cardsData.forEach((item) => {
         const cardElement = new Card(item, '#card');
-        cardElement.getCard();
+        cardElement.getCard(openPopup, toggleNocardMessage);
         cardElement.showCard();
     })
-}
-
-function toggleNocardMessage(cardElement) {
-    let noCardMessageElement = document.querySelector('.cards__nocard-massage');
-    if (cardsContainer.children.length === 1) {
-        noCardMessageElement = document.createElement('p');
-        noCardMessageElement.textContent = 'В профиле нет ни одной карточки. Нажмите + для добавления';
-        noCardMessageElement.classList.add('cards__nocard-massage');
-        cardsContainer.before(noCardMessageElement);
-    } else if(noCardMessageElement !== null) {
-        noCardMessageElement.remove();
-    }
 }
 
 function editProfile(evt) {
@@ -152,6 +143,18 @@ function closePopup(popup) {
     popup.removeEventListener('click', closeByClickOverlay);
     popup.firstElementChild.removeEventListener('click', stopPropagationForListener);
     popup.querySelector('.popup__close').removeEventListener('click', closeByClickCross);
+}
+
+function toggleNocardMessage() {
+    let noCardMessageElement = document.querySelector('.cards__nocard-massage');
+    if (cardsContainer.children.length === 1) {
+        noCardMessageElement = document.createElement('p');
+        noCardMessageElement.textContent = 'В профиле нет ни одной карточки. Нажмите + для добавления';
+        noCardMessageElement.classList.add('cards__nocard-massage');
+        cardsContainer.before(noCardMessageElement);
+    } else if(noCardMessageElement !== null) {
+        noCardMessageElement.remove();
+    }
 }
 
 function stopPropagationForListener(evt) {
