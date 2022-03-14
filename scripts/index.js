@@ -1,4 +1,4 @@
-import { Card, cardsContainer } from './Card.js';
+import { Card } from './Card.js';
 import { FormValidator } from './FormValidator.js';
 
 // profile elements
@@ -22,6 +22,9 @@ const btnOpenAddCard = document.querySelector('.profile__add-btn');
 
 const inputNameAddCard = document.querySelector('.popup__input_field_place-name');
 const inputSourceAddCard = document.querySelector('.popup__input_field_link');
+
+// container for cards
+const cardsContainer = document.querySelector('.cards-container');
 
 const initialCards = [
     {
@@ -66,7 +69,7 @@ addPopupListeners();
 const renderFormValidators = (function () {
     const formValidators = [];
 
-    FormValidator.getFormList(document, selectors.formSelector).forEach((formElement) => {
+    getFormList(document, selectors.formSelector).forEach((formElement) => {
         const formValidator = new FormValidator(selectors, formElement);
         formValidator.enableValidation();
         formValidators.push(formValidator);
@@ -75,14 +78,20 @@ const renderFormValidators = (function () {
     return formValidators;
 }());
 
+function generateCard(cardDataObj, selectorCard) {
+    const cardElement = new Card(cardDataObj, selectorCard, openPopup);
+    return cardElement.getCard();
+}
+
+function showCard(cardElement) {
+    cardsContainer.prepend(cardElement);
+}
+
 function addCardWithPopup(evt) {
     evt.preventDefault();
 
-    const cardElement = new Card({name: inputNameAddCard.value, link: inputSourceAddCard.value}, '#card');
-    cardElement.getCard(openPopup, toggleNocardMessage);
-    cardElement.showCard();
-
-    toggleNocardMessage();
+    const cardElement = generateCard({name: inputNameAddCard.value, link: inputSourceAddCard.value}, '#card');
+    showCard(cardElement);
 
     formAddCard.reset();
     closePopup(popupAddCard);
@@ -90,9 +99,8 @@ function addCardWithPopup(evt) {
 
 function renderDefaultCardsOnPage(cardsData) {
     cardsData.forEach((item) => {
-        const cardElement = new Card(item, '#card');
-        cardElement.getCard(openPopup, toggleNocardMessage);
-        cardElement.showCard();
+        const cardElement = generateCard(item, '#card')
+        showCard(cardElement);
     })
 }
 
@@ -114,8 +122,15 @@ function openPopup(popup) {
 }
 
 function openPopupWithForms(popup) {
+    const formList = getFormList(popup, selectors.formSelector);
     renderFormValidators.forEach((formValidator) => {
-        formValidator.checkValidationToOpenFormIfNeeded(popup);
+        if (formList.includes(formValidator.formElement)) {
+            formValidator.inputList.forEach((inputElement) => {
+            // вызов по описанному ниже кейсу
+            formValidator.isValid(formValidator.isEmptyForm(), formValidator.formElement, inputElement);
+            formValidator.changeButtonState();
+            })
+        }
     })
     openPopup(popup);
 }
@@ -145,18 +160,6 @@ function closePopup(popup) {
     popup.querySelector('.popup__close').removeEventListener('click', closeByClickCross);
 }
 
-function toggleNocardMessage() {
-    let noCardMessageElement = document.querySelector('.cards__nocard-massage');
-    if (cardsContainer.children.length === 1) {
-        noCardMessageElement = document.createElement('p');
-        noCardMessageElement.textContent = 'В профиле нет ни одной карточки. Нажмите + для добавления';
-        noCardMessageElement.classList.add('cards__nocard-massage');
-        cardsContainer.before(noCardMessageElement);
-    } else if(noCardMessageElement !== null) {
-        noCardMessageElement.remove();
-    }
-}
-
 function stopPropagationForListener(evt) {
     evt.stopPropagation();
 }
@@ -165,6 +168,11 @@ function addPopupListeners() {
     btnOpenEditProfile.addEventListener('click', () => {
         inputNameEditProfile.value = profileName.textContent;
         inputOccupationEditProfile.value = profileOccupation.textContent;
+
+        // в openPopupWithForms также выполняется вызов isValid для того, чтобы убрать ошибки, возникающие в таком кейсе: открыли форму,
+        // ввели значения в оба инпута, удалили все значения. Отображаются ошибки о пустых инпутах. Далее форму закрываем и снова открываем.
+        // Наставник в прошлой работе согласился, что при новом открытии формы в таком случае ошибки не должны отображаться - это кажется стандартным поведением.
+        // Для этого и вызываем isValid, а не просто оперируем changeButtonState.
         openPopupWithForms(popupEditProfile);
     });
 
@@ -174,5 +182,6 @@ function addPopupListeners() {
     formAddCard.addEventListener('submit', addCardWithPopup);
 }
 
-
-
+function getFormList(formContainer, formSelector) {
+    return Array.from(formContainer.querySelectorAll(formSelector));
+}

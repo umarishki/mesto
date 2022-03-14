@@ -1,5 +1,6 @@
 .popup__form {
     display: flex;
+    height: 330px;
     flex-direction: column;
     align-items: center;
 }

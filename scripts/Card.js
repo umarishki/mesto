@@ -1,23 +1,25 @@
-// container for cards
-export const cardsContainer = document.querySelector('.cards-container');
-
 // pop-up "card-preview" elements
 const popupCardPreview = document.querySelector('.popup_type_card-preview');
 
 export class Card {
-    constructor(cardData, cardTemplateSelector) {
+    constructor(cardData, cardTemplateSelector, openPopupFunc) {
         this._name = cardData.name;
         this._link = cardData.link;
         this._cardTemplateSelector = cardTemplateSelector;
+        this._openPopupFunc = openPopupFunc;
     }
 
-    getCard(openPopupFunc, toggleNocardMessageFunc) {
+    getCard() {
         this._cardElement = this._getTemplate();
-        this._cardElement.querySelector('.cards__image').src = this._link;
-        this._cardElement.querySelector('.cards__image').alt = this._name;
+
+        this._cardImage = this._cardElement.querySelector('.cards__image');
+        this._btnLikeCard = this._cardElement.querySelector('.cards__like-icon');
+
+        this._cardImage.src = this._link;
+        this._cardImage.alt = this._name;
         this._cardElement.querySelector('.cards__title').textContent = this._name;
 
-        this._addEventListeners(openPopupFunc, toggleNocardMessageFunc);
+        this._addEventListeners(this._openPopupFunc);
 
         return this._cardElement;
     }
@@ -28,33 +30,19 @@ export class Card {
         return cardElement;
     }
 
-    deleteCard() {
+    _deleteCard() {
         this._cardElement.remove();
     }
     
-    changeLikeCardIcon(btnLikeCard) {
-        btnLikeCard.classList.toggle('cards__like-icon_active');
+    _changeLikeCardIcon() {
+        this._btnLikeCard.classList.toggle('cards__like-icon_active');
     }
 
-    showCard() {
-        cardsContainer.prepend(this._cardElement);
-    }
+    _addEventListeners(openPopupFunc) {
+        this._cardElement.querySelector('.cards__delete-icon').addEventListener('click', () => this._deleteCard());   
+        this._btnLikeCard.addEventListener('click', () => this._changeLikeCardIcon());
 
-    _addEventListeners(openPopupFunc, toggleNocardMessageFunc) {
-        this._addDeleteListener(this._cardElement.querySelector('.cards__delete-icon'), toggleNocardMessageFunc);
-        this._addLikeListener(this._cardElement.querySelector('.cards__like-icon'));
-        this._addOpenPreviewListener(this._cardElement.querySelector('.cards__image'), this._cardElement.querySelector('.cards__title'), openPopupFunc);
-    }
-
-    _addDeleteListener(btnDeleteCard, toggleNocardMessageFunc) {
-        btnDeleteCard.addEventListener('click', () => {
-            this.deleteCard();
-            toggleNocardMessageFunc();
-        });
-    }
-    
-    _addLikeListener(btnLikeCard) {
-        btnLikeCard.addEventListener('click', () => { this.changeLikeCardIcon(btnLikeCard) });
+        this._addOpenPreviewListener(this._cardImage, this._cardElement.querySelector('.cards__title'), openPopupFunc);
     }
     
     _addOpenPreviewListener(cardImageElement, cardTitleElement, openPopupFunc) {
