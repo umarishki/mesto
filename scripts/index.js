@@ -9,7 +9,7 @@ const profileOccupation = document.querySelector('.profile-info__subtitle');
 const popupEditProfile = document.querySelector('.popup_type_edit-profile');
 const formEditProfile = document.querySelector('.popup__form_type_edit-profile');
 
-const btnOpenEditProfile = document.querySelector('.profile-info__edit-btn');
+const buttonOpenEditProfile = document.querySelector('.profile-info__edit-btn');
 
 const inputNameEditProfile = document.querySelector('.popup__input_field_name');
 const inputOccupationEditProfile = document.querySelector('.popup__input_field_occupation');
@@ -18,7 +18,7 @@ const inputOccupationEditProfile = document.querySelector('.popup__input_field_o
 const popupAddCard = document.querySelector('.popup_type_add-card');
 const formAddCard = document.querySelector('.popup__form_type_add-card');
 
-const btnOpenAddCard = document.querySelector('.profile__add-btn');
+const buttonOpenAddCard = document.querySelector('.profile__add-btn');
 
 const inputNameAddCard = document.querySelector('.popup__input_field_place-name');
 const inputSourceAddCard = document.querySelector('.popup__input_field_link');
@@ -63,20 +63,12 @@ const selectors = {
 };
 
 renderDefaultCardsOnPage(initialCards);
-
 addPopupListeners();
 
-const renderFormValidators = (function () {
-    const formValidators = [];
-
-    getFormList(document, selectors.formSelector).forEach((formElement) => {
-        const formValidator = new FormValidator(selectors, formElement);
-        formValidator.enableValidation();
-        formValidators.push(formValidator);
-    });
-
-    return formValidators;
-}());
+const profileValidation = new FormValidator(selectors, formEditProfile);
+const newCardValidation = new FormValidator(selectors, formAddCard);
+profileValidation.enableValidation();
+newCardValidation.enableValidation(); 
 
 function generateCard(cardDataObj, selectorCard) {
     const cardElement = new Card(cardDataObj, selectorCard, openPopup);
@@ -121,18 +113,12 @@ function openPopup(popup) {
     popup.querySelector('.popup__close').addEventListener('click', closeByClickCross);
 }
 
-function openPopupWithForms(popup) {
-    const formList = getFormList(popup, selectors.formSelector);
-    renderFormValidators.forEach((formValidator) => {
-        if (formList.includes(formValidator.formElement)) {
-            formValidator.inputList.forEach((inputElement) => {
-            // вызов по описанному ниже кейсу
-            formValidator.isValid(formValidator.isEmptyForm(), formValidator.formElement, inputElement);
-            formValidator.changeButtonState();
-            })
-        }
-    })
-    openPopup(popup);
+function openAddCardPopup() {
+    if (!inputNameAddCard.value && !inputSourceAddCard.value) {
+      newCardValidation.resetValidation();
+    }
+    newCardValidation.changeButtonState();
+    openPopup(popupAddCard);
 }
 
 function closeByEscape(evt) {
@@ -165,23 +151,17 @@ function stopPropagationForListener(evt) {
 }
 
 function addPopupListeners() {
-    btnOpenEditProfile.addEventListener('click', () => {
+    buttonOpenEditProfile.addEventListener('click', () => {
         inputNameEditProfile.value = profileName.textContent;
         inputOccupationEditProfile.value = profileOccupation.textContent;
 
-        // в openPopupWithForms также выполняется вызов isValid для того, чтобы убрать ошибки, возникающие в таком кейсе: открыли форму,
-        // ввели значения в оба инпута, удалили все значения. Отображаются ошибки о пустых инпутах. Далее форму закрываем и снова открываем.
-        // Наставник в прошлой работе согласился, что при новом открытии формы в таком случае ошибки не должны отображаться - это кажется стандартным поведением.
-        // Для этого и вызываем isValid, а не просто оперируем changeButtonState.
-        openPopupWithForms(popupEditProfile);
+        profileValidation.resetValidation();
+        profileValidation.changeButtonState();
+        openPopup(popupEditProfile); 
     });
 
-    btnOpenAddCard.addEventListener('click', () => { openPopupWithForms(popupAddCard) });
+    buttonOpenAddCard.addEventListener('click', openAddCardPopup);
 
     formEditProfile.addEventListener('submit', editProfile);
     formAddCard.addEventListener('submit', addCardWithPopup);
-}
-
-function getFormList(formContainer, formSelector) {
-    return Array.from(formContainer.querySelectorAll(formSelector));
 }

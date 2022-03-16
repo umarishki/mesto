@@ -1,15 +1,15 @@
 export class FormValidator {
     constructor(selectorsObj, formElement) {
         this._selectorsObj = selectorsObj;
-        this.formElement = formElement;
-        this.inputList = Array.from(this.formElement.querySelectorAll(this._selectorsObj.inputSelector));
-        this._buttonElement = this.formElement.querySelector(this._selectorsObj.submitButtonSelector);
+        this._formElement = formElement;
+        this._inputList = Array.from(this._formElement.querySelectorAll(this._selectorsObj.inputSelector));
+        this._buttonElement = this._formElement.querySelector(this._selectorsObj.submitButtonSelector);
         
     }
 
     // add listeners for form
     enableValidation() {
-        this.formElement.addEventListener('submit', (evt) => {
+        this._formElement.addEventListener('submit', (evt) => {
             evt.preventDefault();
         });
         this._setEventListeners();
@@ -17,45 +17,46 @@ export class FormValidator {
 
     // add listeners for all input-elements in form
     _setEventListeners() {
-        this.inputList.forEach((inputElement) => {
+        this._inputList.forEach((inputElement) => {
             this.changeButtonState();
 
             inputElement.addEventListener('input', () => {
-                this.isValid(false, this.formElement, inputElement);
+                this._isValid(inputElement);
                 this.changeButtonState();
             });
         })
     }
 
-    _showInputError(inputElement, errorElement, errorMessage) {
+    _showInputError(inputElement, errorMessage) {
+        const errorMessageElement = this._formElement.querySelector(`.${inputElement.id}-error`);
         inputElement.classList.add(this._selectorsObj.inputErrorClass);
-        errorElement.classList.add(this._selectorsObj.errorClass);
-        errorElement.textContent = errorMessage;
+        errorMessageElement.classList.add(this._selectorsObj.errorClass);
+        errorMessageElement.textContent = errorMessage;
     }
 
-    _hideInputError(inputElement, errorElement) {
+    _hideInputError(inputElement) {
+        const errorMessageElement = this._formElement.querySelector(`.${inputElement.id}-error`);
         inputElement.classList.remove(this._selectorsObj.inputErrorClass);
-        errorElement.classList.remove(this._selectorsObj.errorClass);
-        errorElement.textContent = '';
+        errorMessageElement.classList.remove(this._selectorsObj.errorClass);
+        errorMessageElement.textContent = '';
     }
 
-    isEmptyForm() {
-        return !(this.inputList.some((inputElement) => inputElement.value !== ''));
-    }
-
-    isValid(isValidIfEmptyForm, formElement, inputElement) {
-        // Примечание к комментарию ревью: кажется, что при открыти формы пустые поля - это валидно. А вот при работе с формой, пустые поля должны посвечиваться ошибкой
-        // isValidIfEmptyForm используется для того, чтобы определить нужно ли валидировать форму или нет
-        const errorMessageElement = formElement.querySelector(`.${inputElement.id}-error`);
-        if (isValidIfEmptyForm || inputElement.validity.valid) {
-            this._hideInputError(inputElement, errorMessageElement);
+    _isValid(inputElement) {
+        if (inputElement.validity.valid) {
+            this._hideInputError(inputElement);
         } else {
-            this._showInputError(inputElement, errorMessageElement, inputElement.validationMessage);
+            this._showInputError(inputElement, inputElement.validationMessage);
         }
     }
 
+    resetValidation() {
+        this._inputList.forEach((inputElement) => {
+          this._hideInputError(inputElement);
+        });
+    }
+
     _hasInvalidInput() {
-        return this.inputList.some((inputElement) => !inputElement.validity.valid);
+        return this._inputList.some((inputElement) => !inputElement.validity.valid);
     }
 
     changeButtonState() {

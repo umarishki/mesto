@@ -13,7 +13,7 @@ export class Card {
         this._cardElement = this._getTemplate();
 
         this._cardImage = this._cardElement.querySelector('.cards__image');
-        this._btnLikeCard = this._cardElement.querySelector('.cards__like-icon');
+        this._buttonLikeCard = this._cardElement.querySelector('.cards__like-icon');
 
         this._cardImage.src = this._link;
         this._cardImage.alt = this._name;
@@ -35,12 +35,12 @@ export class Card {
     }
     
     _changeLikeCardIcon() {
-        this._btnLikeCard.classList.toggle('cards__like-icon_active');
+        this._buttonLikeCard.classList.toggle('cards__like-icon_active');
     }
 
     _addEventListeners(openPopupFunc) {
         this._cardElement.querySelector('.cards__delete-icon').addEventListener('click', () => this._deleteCard());   
-        this._btnLikeCard.addEventListener('click', () => this._changeLikeCardIcon());
+        this._buttonLikeCard.addEventListener('click', () => this._changeLikeCardIcon());
 
         this._addOpenPreviewListener(this._cardImage, this._cardElement.querySelector('.cards__title'), openPopupFunc);
     }
