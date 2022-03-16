@@ -26,6 +26,12 @@ const inputSourceAddCard = document.querySelector('.popup__input_field_link');
 // container for cards
 const cardsContainer = document.querySelector('.cards-container');
 
+// pop-up "card-preview" elements
+const popupCardPreview = document.querySelector('.popup_type_card-preview');
+
+const imageCardPreview = document.querySelector('.popup__img-preview');
+const titleCardPreview = document.querySelector('.popup__preview-title');
+
 const initialCards = [
     {
         name: 'Архыз',
@@ -62,6 +68,8 @@ const selectors = {
     errorClass: 'popup__error_visible'
 };
 
+const cardSelectorTemplate = '#card';
+
 renderDefaultCardsOnPage(initialCards);
 addPopupListeners();
 
@@ -71,7 +79,7 @@ profileValidation.enableValidation();
 newCardValidation.enableValidation(); 
 
 function generateCard(cardDataObj, selectorCard) {
-    const cardElement = new Card(cardDataObj, selectorCard, openPopup);
+    const cardElement = new Card(cardDataObj, selectorCard, openImagePopup);
     return cardElement.getCard();
 }
 
@@ -82,7 +90,7 @@ function showCard(cardElement) {
 function addCardWithPopup(evt) {
     evt.preventDefault();
 
-    const cardElement = generateCard({name: inputNameAddCard.value, link: inputSourceAddCard.value}, '#card');
+    const cardElement = generateCard({name: inputNameAddCard.value, link: inputSourceAddCard.value}, cardSelectorTemplate);
     showCard(cardElement);
 
     formAddCard.reset();
@@ -91,10 +99,17 @@ function addCardWithPopup(evt) {
 
 function renderDefaultCardsOnPage(cardsData) {
     cardsData.forEach((item) => {
-        const cardElement = generateCard(item, '#card')
+        const cardElement = generateCard(item, cardSelectorTemplate)
         showCard(cardElement);
     })
 }
+
+function openImagePopup(name, link) {
+    imageCardPreview.src = link;
+    imageCardPreview.alt = name; 
+    titleCardPreview.textContent = name;
+    openPopup(popupCardPreview);
+} 
 
 function editProfile(evt) {
     evt.preventDefault();
