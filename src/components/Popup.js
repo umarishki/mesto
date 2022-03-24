@@ -3,22 +3,22 @@ export class Popup {
         this._popup = document.querySelector(popupSlector);
         this._handleEscClose = this._handleEscClose.bind(this);
         this._closeByClickOverlay = this._closeByClickOverlay.bind(this);
-        this._stopPropagationForListener = this._stopPropagationForListener.bind(this)
         this._closeByClickCross = this._closeByClickCross.bind(this);
+
+        this._imageCardPreview = this._popup.querySelector('.popup__img-preview');
+        this._titleCardPreview = this._popup.querySelector('.popup__preview-title');
     }
 
     open() {
         this._popup.classList.add('popup_opened');
-        this.setEventListeners();
+
+        document.addEventListener('keydown', this._handleEscClose);
     }
 
     close() {
         this._popup.classList.remove('popup_opened');
 
         document.removeEventListener('keydown', this._handleEscClose);
-        this._popup.removeEventListener('click', this._closeByClickOverlay);
-        this._popup.firstElementChild.removeEventListener('click', this._stopPropagationForListener);
-        this._popup.querySelector('.popup__close').removeEventListener('click', this._closeByClickCross);
     }
 
     _handleEscClose(evt) {
@@ -27,8 +27,10 @@ export class Popup {
         }
     }
 
-    _closeByClickOverlay() {
-        this.close();
+    _closeByClickOverlay(evt) {
+        if (evt.target === evt.currentTarget) {
+            this.close();
+        }
     }
 
     _closeByClickCross() {
@@ -36,13 +38,7 @@ export class Popup {
     }
 
     setEventListeners() {
-        document.addEventListener('keydown', this._handleEscClose);
         this._popup.addEventListener('click', this._closeByClickOverlay);
-        this._popup.firstElementChild.addEventListener('click', this._stopPropagationForListener);
         this._popup.querySelector('.popup__close').addEventListener('click', this._closeByClickCross);
-    }
-
-    _stopPropagationForListener(evt) {
-        evt.stopPropagation();
     }
 }
