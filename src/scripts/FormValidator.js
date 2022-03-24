@@ -4,7 +4,7 @@ export class FormValidator {
         this._formElement = formElement;
         this._inputList = Array.from(this._formElement.querySelectorAll(this._selectorsObj.inputSelector));
         this._buttonElement = this._formElement.querySelector(this._selectorsObj.submitButtonSelector);
-        
+
     }
 
     // add listeners for form
@@ -51,7 +51,7 @@ export class FormValidator {
 
     resetValidation() {
         this._inputList.forEach((inputElement) => {
-          this._hideInputError(inputElement);
+            this._hideInputError(inputElement);
         });
     }
 

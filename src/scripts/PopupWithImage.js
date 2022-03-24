@@ -1,4 +1,4 @@
-import { Popup } from './Popup.js'; 
+import { Popup } from './Popup.js';
 
 export class PopupWithImage extends Popup {
     open(name, link) {
@@ -6,7 +6,7 @@ export class PopupWithImage extends Popup {
         this._titleCardPreview = this._popup.querySelector('.popup__preview-title');
 
         this._titleCardPreview.textContent = name;
-        this._imageCardPreview.alt = name; 
+        this._imageCardPreview.alt = name;
         this._imageCardPreview.src = link;
         super.open();
     }

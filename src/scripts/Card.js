@@ -33,13 +33,13 @@ export class Card {
     _deleteCard() {
         this._cardElement.remove();
     }
-    
+
     _changeLikeCardIcon() {
         this._buttonLikeCard.classList.toggle('cards__like-icon_active');
     }
 
     _addEventListeners() {
-        this._deleteIcon.addEventListener('click', () => this._deleteCard());   
+        this._deleteIcon.addEventListener('click', () => this._deleteCard());
         this._buttonLikeCard.addEventListener('click', () => this._changeLikeCardIcon());
         this._cardImage.addEventListener('click', () => this._openPopupFunc(this._name, this._link));
     }

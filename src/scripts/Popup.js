@@ -30,7 +30,7 @@ export class Popup {
     _closeByClickOverlay() {
         this.close();
     }
-    
+
     _closeByClickCross() {
         this.close();
     }

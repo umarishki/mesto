@@ -1,9 +1,10 @@
-import { Card } from './Card.js';
-import { FormValidator } from './FormValidator.js';
-import { Section } from './Section.js';
-import { PopupWithImage } from './PopupWithImage.js';
-import { PopupWithForm } from './PopupWithForm.js';
-import { UserInfo } from './UserInfo.js';
+import './pages/index.css';
+import { Card } from './scripts/Card.js';
+import { FormValidator } from './scripts/FormValidator.js';
+import { Section } from './scripts/Section.js';
+import { PopupWithImage } from './scripts/PopupWithImage.js';
+import { PopupWithForm } from './scripts/PopupWithForm.js';
+import { UserInfo } from './scripts/UserInfo.js';
 
 
 // pop-up "edit-profile" elements
@@ -56,7 +57,7 @@ const selectors = {
     errorClass: 'popup__error_visible'
 };
 
-const section = new Section({items: initialCards, renderer: renderCard}, '.cards-container');
+const section = new Section({ items: initialCards, renderer: renderCard }, '.cards-container');
 section.renderInitialElements();
 
 const popupWithImage = new PopupWithImage('.popup_type_card-preview');
@@ -66,9 +67,9 @@ const popupAddCard = new PopupWithForm('.popup_type_add-card', addCardWithPopup)
 const profileValidation = new FormValidator(selectors, formEditProfile);
 const newCardValidation = new FormValidator(selectors, formAddCard);
 profileValidation.enableValidation();
-newCardValidation.enableValidation(); 
+newCardValidation.enableValidation();
 
-const userInfo = new UserInfo({profileNameSelector: '.profile-info__title', profileOccupationSelector: '.profile-info__subtitle'});
+const userInfo = new UserInfo({ profileNameSelector: '.profile-info__title', profileOccupationSelector: '.profile-info__subtitle' });
 
 buttonOpenEditProfile.addEventListener('click', openEditProfilePopup);
 buttonOpenAddCard.addEventListener('click', openAddCardPopup);
@@ -81,7 +82,7 @@ function renderCard(cardDataObj) {
 
 function createCard(cardDataObj) {
     const card = new Card(cardDataObj, cardSelectorTemplate, openImagePopup);
-    return card.getCard(); 
+    return card.getCard();
 }
 
 function addCardWithPopup(evt, data) {
@@ -96,7 +97,7 @@ function addCardWithPopup(evt, data) {
 
 function editProfile(evt, data) {
     evt.preventDefault();
-    const {name, occupation} = data;
+    const { name, occupation } = data;
     userInfo.setUserInfo(name, occupation);
 
     popupEditProfile.close();
@@ -104,11 +105,11 @@ function editProfile(evt, data) {
 
 function openImagePopup(name, link) {
     popupWithImage.open(name, link);
-} 
+}
 
 function openAddCardPopup() {
     if (!inputNameAddCard.value && !inputSourceAddCard.value) {
-      newCardValidation.resetValidation();
+        newCardValidation.resetValidation();
     }
     newCardValidation.changeButtonState();
 
@@ -116,7 +117,7 @@ function openAddCardPopup() {
 }
 
 function openEditProfilePopup() {
-    const {name, occupation} = userInfo.getUserInfo();
+    const { name, occupation } = userInfo.getUserInfo();
     inputNameEditProfile.value = name;
     inputOccupationEditProfile.value = occupation;
 

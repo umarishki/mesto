@@ -20,10 +20,10 @@ export class PopupWithForm extends Popup {
 
     setEventListeners() {
         super.setEventListeners();
-       
+
         this._form.addEventListener('submit', this._submitCallbackWithBind);
     }
-    
+
     _submitCallback(evt) {
         this._submitFormFunc(evt, this._getInputValues());
     }
