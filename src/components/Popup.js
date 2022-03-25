@@ -4,9 +4,6 @@ export class Popup {
         this._handleEscClose = this._handleEscClose.bind(this);
         this._closeByClickOverlay = this._closeByClickOverlay.bind(this);
         this._closeByClickCross = this._closeByClickCross.bind(this);
-
-        this._imageCardPreview = this._popup.querySelector('.popup__img-preview');
-        this._titleCardPreview = this._popup.querySelector('.popup__preview-title');
     }
 
     open() {
