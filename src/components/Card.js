@@ -1,8 +1,8 @@
 export class Card {
-    constructor(cardData, cardTemplateSelector, openPopupFunc, userInfo, popupConfirmDeletion, apiChangeLike) {
+    constructor(cardData, cardTemplateSelector, openPopupFunc, userInfo, popupConfirmDeletion, apiChangeLike, apiDeleteCard) {
         this._name = cardData.name;
         this._link = cardData.link;
-        this._likesNumber = cardData.likesNumber;
+        this._likesOwners = cardData.likesOwners;
         this._ID = cardData.ID;
         this._ownerID = cardData.ownerID;
 
@@ -13,6 +13,7 @@ export class Card {
         this._popupConfirmDeletion = popupConfirmDeletion;
 
         this._apiChangeLike = apiChangeLike;
+        this._apiDeleteCard = apiDeleteCard;
     }
 
     getCard() {
@@ -23,9 +24,11 @@ export class Card {
         this._cardImage.alt = this._name;
 
         this._likesNumberElement = this._cardElement.querySelector('.cards__likes-number');
-        this.setLikesNumber(this._likesNumber);
+        this.setLikesNumber(this._likesOwners.length);
 
         this._buttonLikeCard = this._cardElement.querySelector('.cards__like-icon');
+        this._changeLikeIconIfHaveUserLike();
+
         this._deleteIcon = this._cardElement.querySelector('.cards__delete-icon')
 
         if (this._userInfo.getId() !== this._ownerID) {
@@ -40,14 +43,18 @@ export class Card {
         return this._cardElement;
     }
 
-    _getTemplate() {
-        const cardElement = document.querySelector(this._cardTemplateSelector).content.querySelector('.cards__item').cloneNode(true);
-
-        return cardElement;
+    _changeLikeIconIfHaveUserLike() {
+        this._likesOwners.forEach((userID) => {
+            if (userID._id === this._userInfo.getId()) {
+                this._buttonLikeCard.classList.add('cards__like-icon_active');
+                return;
+            }
+        });
     }
 
-    deleteCard() {
-        this._cardElement.remove();
+    _getTemplate() {
+        const cardElement = document.querySelector(this._cardTemplateSelector).content.querySelector('.cards__item').cloneNode(true);
+        return cardElement;
     }
 
     _changeLikeCardIcon() {
@@ -67,7 +74,7 @@ export class Card {
 
     _addEventListeners() {
         this._deleteIcon.addEventListener('click', () => {
-            this._popupConfirmDeletion.setEventListenerForConfirmPopup(() => this.deleteCard());
+            this._popupConfirmDeletion.setEventListenerForConfirmPopup(() => this._apiDeleteCard(this._ID, this._popupConfirmDeletion));
             this._popupConfirmDeletion.open();
         });
         this._buttonLikeCard.addEventListener('click', () => {this._changeLikeCardIcon()});

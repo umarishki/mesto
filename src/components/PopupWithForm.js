@@ -20,23 +20,11 @@ export class PopupWithForm extends Popup {
 
     setEventListeners() {
         super.setEventListeners();
-
-        if(this._submitFormFunc) {
-            this._form.addEventListener('submit', this._submitCallbackWithBind);
-        }
-    }
-
-    setEventListenerForConfirmPopup(callback) {
-        this._form.addEventListener('submit', () => {
-            callback();
-            this.close();
-        });
+        this._form.addEventListener('submit', this._submitCallbackWithBind);
     }
 
     _submitCallback(evt) {
-        if(this._submitFormFunc) {
-            this._submitFormFunc(evt, this._getInputValues());
-        }
+        this._submitFormFunc(evt, this._getInputValues());
     }
 
     close() {
