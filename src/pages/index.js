@@ -95,14 +95,11 @@ function apiChangeLike(card, toggle) {
 }
 
 function apiDeleteCard(id, popup) {
-    setLoading(popup.btnSubmit);
-    api.deleteCard(id, (result) => {
-        this._cardElement.remove();
-    },
-    () => {
-        setNotLoading(popup.btnSubmit);
-        console.log('finally');
-    });
+    api.deleteCard(id,
+        (result) => {
+            this._cardElement.remove();
+        }
+    );
 }
 
 function renderCard(cardDataObj) {
@@ -123,10 +120,9 @@ function addCardWithPopup(evt, data) {
         });
         popupAddCard.close();
     },
-    () => {
-        setNotLoading(popupAddCard.btnSubmit);
-        console.log('finally');
-    });
+        () => {
+            setNotLoading(popupAddCard.btnSubmit);
+        });
 }
 
 function editProfile(evt, data) {
@@ -136,10 +132,9 @@ function editProfile(evt, data) {
         userInfo.setUserInfo(result.name, result.about);
         popupEditProfile.close();
     },
-    () => {
-        setNotLoading(popupEditProfile.btnSubmit);
-        console.log('finally');
-    });
+        () => {
+            setNotLoading(popupEditProfile.btnSubmit);
+        });
 }
 
 function editAvatar(evt, data) {
@@ -149,10 +144,9 @@ function editAvatar(evt, data) {
         userInfo.setUserImage(result.avatar);
         popupEditAvatar.close();
     },
-    () => {
-        setNotLoading(popupEditAvatar.btnSubmit);
-        console.log('finally');
-    });
+        () => {
+            setNotLoading(popupEditAvatar.btnSubmit);
+        });
 }
 
 function setLoading(buttonElement) {

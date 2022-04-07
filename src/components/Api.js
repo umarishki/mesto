@@ -32,8 +32,7 @@ export class Api {
             'GET',
             'cards',
             '',
-            thenCallback,
-            undefined
+            thenCallback
         )
     }
 
@@ -42,8 +41,7 @@ export class Api {
             'GET',
             'users/me',
             '',
-            thenCallback,
-            undefined
+            thenCallback
         )
     }
 
@@ -101,8 +99,7 @@ export class Api {
             'DELETE',
             `cards/${cardID}/likes`,
             '',
-            thenCallback,
-            undefined
+            thenCallback
         );
     }
 
@@ -111,8 +108,7 @@ export class Api {
             'PUT',
             `cards/${cardID}/likes`,
             '',
-            thenCallback,
-            undefined
+            thenCallback
         );
     }
 }
