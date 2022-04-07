@@ -4,6 +4,7 @@ export class Popup {
         this._handleEscClose = this._handleEscClose.bind(this);
         this._closeByClickOverlay = this._closeByClickOverlay.bind(this);
         this._closeByClickCross = this._closeByClickCross.bind(this);
+        this.btnSubmit = this._popup.querySelector('.popup__button');
     }
 
     open() {

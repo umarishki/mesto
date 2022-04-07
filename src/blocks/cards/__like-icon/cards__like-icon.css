@@ -9,6 +9,7 @@
     background-color: #FFFFFF;
     transition: opacity 0.5s ease;
     border: none;
+    padding: 0;
 }
 
 .cards__like-icon:hover {

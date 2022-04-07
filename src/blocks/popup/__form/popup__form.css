@@ -1,6 +1,16 @@
 .popup__form {
-    display: flex;
     height: 330px;
-    flex-direction: column;
-    align-items: center;
+    box-sizing: border-box;
+    padding: 36px;
 }
+
+@media screen and (max-width: 767px) {
+    .popup__form {
+        height: 322px;
+        padding: 25px 22px;
+    }
+}
+
+
+
+
