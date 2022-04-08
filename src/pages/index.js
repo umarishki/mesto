@@ -44,9 +44,7 @@ const enableValidation = (selectors) => {
     const formList = Array.from(document.querySelectorAll(selectors.formSelector));
     formList.forEach((formElement) => {
         const validator = new FormValidator(selectors, formElement);
-        // получаем данные из атрибута `name` у формы
-        const formName = formElement.getAttribute('name');
-        formValidators[formName] = validator;
+        formValidators[formElement.formName] = validator;
         validator.enableValidation();
     });
 };
@@ -60,7 +58,6 @@ const api = new Api({
         'Content-Type': 'application/json'
     }
 });
-
 
 
 Promise.all([api.getProfileInfo(), api.getInitialCards()])
@@ -86,7 +83,7 @@ Promise.all([api.getProfileInfo(), api.getInitialCards()])
 
 function apiChangeLike(card, isNeedToDelete, callback) {
     if (isNeedToDelete) {
-        (api.deleteLike(card._ID))
+        api.deleteLike(card.ID)
             .then((result) => {
                 callback();
                 card.setLikesNumber(result.likes.length);
@@ -96,7 +93,7 @@ function apiChangeLike(card, isNeedToDelete, callback) {
             });
     }
     else {
-        (api.putLike(card._ID))
+        api.putLike(card.ID)
             .then((result) => {
                 callback();
                 card.setLikesNumber(result.likes.length);
@@ -107,10 +104,10 @@ function apiChangeLike(card, isNeedToDelete, callback) {
     }
 }
 
-function apiDeleteCard(id, popup) {
-    (api.deleteCard(id))
+function apiDeleteCard(id, popup, cardElement) {
+    api.deleteCard(id)
         .then((result) => {
-            this._cardElement.remove();
+            cardElement.remove();
             popup.close();
         })
         .catch((err) => {
@@ -123,11 +120,8 @@ function renderCard(cardDataObj) {
     return card.getCard();
 }
 
-function addCardWithPopup(evt, data) {
-    evt.preventDefault();
-    popupAddCard.renderLoading(true, 'Сохранение...');
-    
-    (api.postNewCard(data))
+function addCardWithPopup(data) {
+    return api.postNewCard(data)
         .then((result) => {
             section.addItem({
                 name: result.name,
@@ -136,48 +130,21 @@ function addCardWithPopup(evt, data) {
                 ID: result._id,
                 ownerID: result.owner._id,
             });
-            popupAddCard.close();
         })
-        .catch((err) => {
-            console.log(err);
-        })
-        .finally(() => {
-            popupAddCard.renderLoading(false,  "Сохранить");
-        });
 }
 
-function editProfile(evt, data) {
-    evt.preventDefault();
-    popupEditProfile.renderLoading(true, 'Сохранение...');
-
-    (api.patchProfileInfo(data))
+function editProfile(data) {
+    return api.patchProfileInfo(data)
         .then((result) => {
             userInfo.setUserInfo({name: result.name, about: result.about, avatar: result.avatar, _id: result._id});
-            popupEditProfile.close();
         })
-        .catch((err) => {
-            console.log(err);
-        })
-        .finally(() => {
-            popupEditProfile.renderLoading(false,  "Сохранить");
-        });
 }
 
-function editAvatar(evt, data) {
-    evt.preventDefault();
-    popupEditAvatar.renderLoading(true, 'Сохранение...');
-
-    (api.patchProfileAvatar(data))
+function editAvatar(data) {
+    return api.patchProfileAvatar(data)
         .then((result) => {
             userInfo.setUserInfo({name: result.name, about: result.about, avatar: result.avatar, _id: result._id});
-            popupEditAvatar.close();
         })
-        .catch((err) => {
-            console.log(err);
-        })
-        .finally(() => {
-            popupEditAvatar.renderLoading(false,  "Сохранить");
-        });
 }
 
 function openImagePopup(name, link) {
@@ -185,8 +152,7 @@ function openImagePopup(name, link) {
 }
 
 function openAddCardPopup() {
-    const formName = formAddCard.getAttribute('name');
-    const newCardValidation = formValidators[formName];
+    const newCardValidation = formValidators[formAddCard.formName];
     newCardValidation.resetValidation();
     newCardValidation.changeButtonState();
 
@@ -198,8 +164,7 @@ function openEditProfilePopup() {
     inputNameEditProfile.value = name;
     inputOccupationEditProfile.value = occupation;
 
-    const formName = formEditProfile.getAttribute('name');
-    const profileValidation = formValidators[formName];
+    const profileValidation = formValidators[formEditProfile.formName];
     profileValidation.resetValidation();
     profileValidation.changeButtonState();
 
@@ -207,8 +172,7 @@ function openEditProfilePopup() {
 }
 
 function openEditAvatarPopup() {
-    const formName = formEditAvatar.getAttribute('name');
-    const newCardValidation = formValidators[formName];
+    const newCardValidation = formValidators[formEditAvatar.formName];
     newCardValidation.resetValidation();
     newCardValidation.changeButtonState();
 

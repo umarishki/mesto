@@ -3,7 +3,7 @@ export class Card {
         this._name = cardData.name;
         this._link = cardData.link;
         this._likesOwners = cardData.likesOwners;
-        this._ID = cardData.ID;
+        this.ID = cardData.ID;
         this._ownerID = cardData.ownerID;
 
         this._cardTemplateSelector = cardTemplateSelector;
@@ -76,7 +76,7 @@ export class Card {
 
     _addEventListeners() {
         this._deleteIcon.addEventListener('click', () => {
-            this._popupConfirmDeletion.setEventListenerForConfirmPopup(() => this._apiDeleteCard(this._ID, this._popupConfirmDeletion));
+            this._popupConfirmDeletion.setEventListenerForConfirmPopup(() => this._apiDeleteCard(this.ID, this._popupConfirmDeletion, this._cardElement));
             this._popupConfirmDeletion.open();
         });
         this._buttonLikeCard.addEventListener('click', () => {this._changeLikeCardIcon()});
