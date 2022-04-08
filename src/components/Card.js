@@ -59,12 +59,14 @@ export class Card {
 
     _changeLikeCardIcon() {
         if (this._buttonLikeCard.classList.contains('cards__like-icon_active')) {
-            this._buttonLikeCard.classList.remove('cards__like-icon_active');
-            this._apiChangeLike(this, 'delete');
+            this._apiChangeLike(this, true,
+                () => {this._buttonLikeCard.classList.remove('cards__like-icon_active')}
+            );
         }
         else {
-            this._buttonLikeCard.classList.add('cards__like-icon_active');
-            this._apiChangeLike(this, 'add');
+            this._apiChangeLike(this, false,
+                () => {this._buttonLikeCard.classList.add('cards__like-icon_active')}
+            );
         }
     }
 

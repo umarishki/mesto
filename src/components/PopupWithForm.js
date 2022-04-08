@@ -8,6 +8,8 @@ export class PopupWithForm extends Popup {
 
         this._submitFormFunc = submitFormFunc;
         this._submitCallbackWithBind = this._submitCallback.bind(this);
+
+        this.btnSubmit = this._popup.querySelector('.popup__button');
     }
 
     _getInputValues() {
@@ -30,5 +32,9 @@ export class PopupWithForm extends Popup {
     close() {
         super.close();
         this._form.reset();
+    }
+
+    renderLoading(isLoading, buttonText='Сохранить') {
+        this.btnSubmit.textContent = buttonText;
     }
 }

@@ -5,8 +5,8 @@ export class Api {
         this._contentType = options.headers['Content-Type'];
     }
 
-    _request(methodApi, urlApi, dataObj, thenCallback, finallyCallback) {
-        fetch(`${this._baseUrl}${urlApi}`, {
+    _request(methodApi, urlApi, dataObj) {
+        return fetch(`${this._baseUrl}${urlApi}`, {
             method: methodApi,
             headers: {
                 authorization: this._authorization,
@@ -20,95 +20,78 @@ export class Api {
                 }
                 return Promise.reject(`Ошибка: ${res.status}`);
             })
-            .then(thenCallback)
-            .catch((err) => {
-                console.log(err);
-            })
-            .finally(finallyCallback);
     }
 
-    getInitialCards(thenCallback) {
-        this._request(
+    getInitialCards() {
+        return this._request(
             'GET',
             'cards',
-            '',
-            thenCallback
+            undefined
         )
     }
 
-    getProfileInfo(thenCallback) {
-        this._request(
+    getProfileInfo() {
+        return this._request(
             'GET',
             'users/me',
-            '',
-            thenCallback
+            undefined
         )
     }
 
-    postNewCard(data, thenCallback, finallyCallback) {
-        this._request(
+    postNewCard(data) {
+        return this._request(
             'POST',
             'cards',
             {
                 name: data['place-name'],
                 link: data.link,
-            },
-            thenCallback,
-            finallyCallback
+            }
         );
     }
 
-    deleteCard(cardID, thenCallback, finallyCallback) {
-        this._request(
+    deleteCard(cardID) {
+        return this._request(
             'DELETE',
             `cards/${cardID}`,
-            '',
-            thenCallback,
-            finallyCallback
+            undefined
         );
     }
 
-    patchProfileInfo(data, thenCallback, finallyCallback) {
+    patchProfileInfo(data) {
         const { name, occupation } = data;
-        this._request(
+        return this._request(
             'PATCH',
             'users/me',
             {
                 name: name,
                 about: occupation
-            },
-            thenCallback,
-            finallyCallback
+            }
         );
     }
 
-    patchProfileAvatar(data, thenCallback, finallyCallback) {
-        this._request(
+    patchProfileAvatar(data) {
+        return this._request(
             'PATCH',
             'users/me/avatar',
             {
                 avatar: data.link,
-            },
-            thenCallback,
-            finallyCallback
+            }
         );
     }
 
-    deleteLike(cardID, thenCallback) {
-        this._request(
+    deleteLike(cardID) {
+        return this._request(
             'DELETE',
             `cards/${cardID}/likes`,
-            '',
-            thenCallback
+            undefined
         );
     }
 
-    putLike(cardID, thenCallback) {
-        this._request(
+    putLike(cardID) {
+        return this._request(
             'PUT',
             `cards/${cardID}/likes`,
-            '',
-            thenCallback
+            undefined
         );
     }
 }
