@@ -44,7 +44,8 @@ const enableValidation = (selectors) => {
     const formList = Array.from(document.querySelectorAll(selectors.formSelector));
     formList.forEach((formElement) => {
         const validator = new FormValidator(selectors, formElement);
-        formValidators[formElement.formName] = validator;
+        const formName = formElement.getAttribute('name');
+        formValidators[formName] = validator;
         validator.enableValidation();
     });
 };
@@ -152,7 +153,7 @@ function openImagePopup(name, link) {
 }
 
 function openAddCardPopup() {
-    const newCardValidation = formValidators[formAddCard.formName];
+    const newCardValidation = formValidators[popupAddCard.formName];
     newCardValidation.resetValidation();
     newCardValidation.changeButtonState();
 
@@ -164,7 +165,7 @@ function openEditProfilePopup() {
     inputNameEditProfile.value = name;
     inputOccupationEditProfile.value = occupation;
 
-    const profileValidation = formValidators[formEditProfile.formName];
+    const profileValidation = formValidators[popupEditProfile.formName];
     profileValidation.resetValidation();
     profileValidation.changeButtonState();
 
@@ -172,7 +173,7 @@ function openEditProfilePopup() {
 }
 
 function openEditAvatarPopup() {
-    const newCardValidation = formValidators[formEditAvatar.formName];
+    const newCardValidation = formValidators[popupEditAvatar.formName];
     newCardValidation.resetValidation();
     newCardValidation.changeButtonState();
 
